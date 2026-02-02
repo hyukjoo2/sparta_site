@@ -113,8 +113,44 @@ export function createNeoEngine({
     state.system_hour = nextClock.system_hour;
     state.system_minute = nextClock.system_minute;
 
-    // day_in_life 예시
-    state.day_in_life = state.system_day;
+    // ---------------------------------------------------------
+    // 🚑 [나이 체계 수정: 12개월 주기 시스템]
+    // ---------------------------------------------------------
+    // 1시간(현실) = 1일(가상) / 30일 = 1개월 / 12개월 = 1살
+    const totalMonths = Math.floor(state.system_day / 30);
+    
+    state.age_years = Math.floor(totalMonths / 12); // 나이 (Years)
+    state.day_in_life = totalMonths % 12;          // 개월 (Months: 0~11)
+
+    // 80세(960개월) 도달 시 환생 로직
+    const MAX_LIFE_YEARS = 80; 
+    if (state.age_years >= MAX_LIFE_YEARS) {
+      const finishedLifeNo = state.life_no;
+      state.life_no += 1;
+      state.system_day = 0;
+      state.age_years = 0;
+      state.day_in_life = 0;
+      state.anchor_real_ms = real; 
+      state.anchor_system_min = 0;
+      state.last_system_min = 0;
+      state.last_event_system_min = -1;
+
+      await appendNeoLog({
+        real_ms: real,
+        kind: "SYSTEM",
+        message: `SYSTEM: Neo ${finishedLifeNo} deceased at age 80. Neo ${state.life_no} born.`,
+      });
+
+      broadcast({
+        type: "SYSTEM",
+        tag: "REBORN",
+        life_no: state.life_no,
+        message: `Neo has been reborn as version ${state.life_no}`,
+        t: Date.now(),
+      });
+      return; // 환생 직후 이번 step 종료
+    }
+    // ---------------------------------------------------------
 
     // ✅ 중복 방지: 분 단위 이벤트 1회만
     if (state.last_event_system_min === systemMin) return;
