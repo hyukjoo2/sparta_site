@@ -1,0 +1,9 @@
+flowchart LR
+  U[User] --> F[Frontend\n(public/src/app/aiPopup.js)]
+  F -->|API call /api/*| S[Server API\n(server/src/app.js)]
+  S -->|reads/writes| DB[(MySQL\nhistory, chat_log, rag_doc, rag_chunk)]
+  S --> Neo[Neo Engine\n(server/src/neo)]
+  F -->|direct or proxied| LLM[LLM Provider\n(OpenAI / HuggingFace / ExaOne)]
+  Neo -->|SSE / queries| F
+  S -->|calls| LLM
+  ingest[ingest_rag.py] -->|writes| RAG[r ag_doc / rag_chunk]

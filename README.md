@@ -74,19 +74,11 @@ sparta-site/
 └─ README.md
 ```
 
-LLM Relationship (Mermaid)
+LLM Relationship
 
-```mermaid
-flowchart LR
-	U[User] --> F[Frontend<br/>(public/src/app/aiPopup.js)]
-	F -->|API call /api/*| S[Server API<br/>(server/src/app.js)]
-	S -->|reads/writes| DB[(MySQL<br/>history, chat_log, rag_doc, rag_chunk)]
-	S --> Neo[Neo Engine<br/>(server/src/neo)]
-	F -->|direct or proxied| LLM[LLM Provider<br/>(OpenAI / HuggingFace)]
-	Neo -->|SSE / queries| F
-	S -->|calls| LLM
-	ingest[ingest_rag.py] -->|writes| RAG[r ag_doc / rag_chunk]
-```
+The Mermaid preview may not render on GitHub. An SVG version can be generated locally and used here. A Mermaid source file is available at `docs/llm-diagram.mmd`.
+
+![LLM Relationship](docs/llm-diagram.svg)
 
 Short explanation:
 
@@ -94,6 +86,18 @@ Short explanation:
 - The server connects DB with the Neo engine for search/generation tasks; external LLMs are used for response generation or RAG augmentation.
 
 See [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) for full directory tree and DB schema details.
+
+Generate `docs/llm-diagram.svg` locally using mermaid-cli:
+
+```bash
+# Install mermaid CLI (one-time)
+npx @mermaid-js/mermaid-cli -v || npm i -g @mermaid-js/mermaid-cli
+
+# Render SVG from the provided source file
+npx @mermaid-js/mermaid-cli -i docs/llm-diagram.mmd -o docs/llm-diagram.svg
+```
+
+If you prefer an online quick-renderer, open https://mermaid.live and paste the contents of `docs/llm-diagram.mmd`.
 
 MySQL installation and running (macOS / Docker)
 
