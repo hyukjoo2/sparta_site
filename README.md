@@ -79,26 +79,26 @@ LLM Relationship
 ```mermaid
 ```mermaid
 flowchart LR
-	U["User"] --> F["Frontend (public/src/app/aiPopup.js)"]
-	F -->|API call /api/*| S["Server API (server/src/app.js)"]
-	S -->|reads/writes| DB[("MySQL: history, chat_log, rag_doc, rag_chunk")]
-	S --> Neo["Neo Engine (server/src/neo)"]
-	F -->|direct or proxied| LLM["LLM Provider (OpenAI / HuggingFace / ExaOne)"]
-	Neo -->|SSE / queries| F
-	S -->|calls| LLM
-	ingest["ingest_rag.py"] -->|writes| RAG["rag_doc / rag_chunk"]
+  U["User"] --> F["Frontend"]
+  F -->|API call| S["Server API"]
+  S -->|read/write| DB[("MySQL")]
+  S --> Neo["Neo Engine"]
+  F -->|direct| LLM["LLM"]
+  Neo -->|SSE| F
+  S -->|call| LLM
+  PY["ingest_rag.py"] -->|write| RAG["RAG"]
 ```
 
-Short explanation:
+Details:
 
-- `aiPopup.js` reads user input, determines intents (e.g., OPEN_HISTORY_MODAL), and calls server APIs or LLMs as needed.
-- The server connects DB with the Neo engine for search/generation tasks; external LLMs are used for response generation or RAG augmentation.
+- **Frontend**: `public/src/app/aiPopup.js` — user input, LLM intent detection, UI actions
+- **Server API**: `server/src/app.js` — Express routes: `/api/history`, `/api/chat_log`, `/api/neo/*`
+- **MySQL**: Tables — `history`, `chat_log`, `rag_doc`, `rag_chunk`
+- **Neo Engine**: `server/src/neo/*` — streaming, query processing, decision logic
+- **LLM**: OpenAI, HuggingFace, ExaOne (external AI provider)
+- **RAG**: Document indexing and retrieval via `ingest_rag.py`
 
-See [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) for full directory tree and DB schema details.
-
-Note: GitHub's markdown renderer may not display Mermaid diagrams inline in all contexts. If it does not render, paste the diagram above into https://mermaid.live to preview, or generate an SVG locally with `@mermaid-js/mermaid-cli` and embed that image instead.
-
-MySQL installation and running (macOS / Docker)
+See [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) for full directory tree and DB schema.
 
 This project uses MySQL. Below are instructions for installing MySQL on macOS (Homebrew) and an alternative Docker option, plus examples for creating the database and applying `tables.sql`.
 
