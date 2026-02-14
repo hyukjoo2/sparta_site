@@ -77,15 +77,16 @@ sparta-site/
 LLM Relationship
 
 ```mermaid
+```mermaid
 flowchart LR
-	U[User] --> F[Frontend (public/src/app/aiPopup.js)]
-	F -->|API call /api/*| S[Server API (server/src/app.js)]
-	S -->|reads/writes| DB[(MySQL: history, chat_log, rag_doc, rag_chunk)]
-	S --> Neo[Neo Engine (server/src/neo)]
-	F -->|direct or proxied| LLM[LLM Provider (OpenAI / HuggingFace / ExaOne)]
+	U["User"] --> F["Frontend (public/src/app/aiPopup.js)"]
+	F -->|API call /api/*| S["Server API (server/src/app.js)"]
+	S -->|reads/writes| DB[("MySQL: history, chat_log, rag_doc, rag_chunk")]
+	S --> Neo["Neo Engine (server/src/neo)"]
+	F -->|direct or proxied| LLM["LLM Provider (OpenAI / HuggingFace / ExaOne)"]
 	Neo -->|SSE / queries| F
 	S -->|calls| LLM
-	ingest[ingest_rag.py] -->|writes| RAG[r ag_doc / rag_chunk]
+	ingest["ingest_rag.py"] -->|writes| RAG["rag_doc / rag_chunk"]
 ```
 
 Short explanation:
