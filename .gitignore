@@ -1,3 +1,33 @@
+# Node modules
+node_modules/
+
+# Python virtual envs
+rag-env/
+venv/
+.venv/
+
+# Environment files
+.env
+.env.*
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+build/
+
+# Logs
+logs/
+*.log
 # Python venv
 rag-env/
 .venv/
@@ -14,3 +44,6 @@ __pycache__/
 
 # env secrets
 .env
+
+# RAG
+Angel_Protocol_본문.pdf
