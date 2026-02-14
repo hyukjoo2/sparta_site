@@ -77,7 +77,6 @@ sparta-site/
 LLM Relationship
 
 ```mermaid
-```mermaid
 flowchart LR
   U["User"] --> F["Frontend"]
   F -->|API call| S["Server API"]
