@@ -76,9 +76,17 @@ sparta-site/
 
 LLM Relationship
 
-The Mermaid preview may not render on GitHub. An SVG version can be generated locally and used here. A Mermaid source file is available at `docs/llm-diagram.mmd`.
-
-![LLM Relationship](docs/llm-diagram.svg)
+```mermaid
+flowchart LR
+	U[User] --> F[Frontend (public/src/app/aiPopup.js)]
+	F -->|API call /api/*| S[Server API (server/src/app.js)]
+	S -->|reads/writes| DB[(MySQL: history, chat_log, rag_doc, rag_chunk)]
+	S --> Neo[Neo Engine (server/src/neo)]
+	F -->|direct or proxied| LLM[LLM Provider (OpenAI / HuggingFace / ExaOne)]
+	Neo -->|SSE / queries| F
+	S -->|calls| LLM
+	ingest[ingest_rag.py] -->|writes| RAG[r ag_doc / rag_chunk]
+```
 
 Short explanation:
 
@@ -87,17 +95,7 @@ Short explanation:
 
 See [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) for full directory tree and DB schema details.
 
-Generate `docs/llm-diagram.svg` locally using mermaid-cli:
-
-```bash
-# Install mermaid CLI (one-time)
-npx @mermaid-js/mermaid-cli -v || npm i -g @mermaid-js/mermaid-cli
-
-# Render SVG from the provided source file
-npx @mermaid-js/mermaid-cli -i docs/llm-diagram.mmd -o docs/llm-diagram.svg
-```
-
-If you prefer an online quick-renderer, open https://mermaid.live and paste the contents of `docs/llm-diagram.mmd`.
+Note: GitHub's markdown renderer may not display Mermaid diagrams inline in all contexts. If it does not render, paste the diagram above into https://mermaid.live to preview, or generate an SVG locally with `@mermaid-js/mermaid-cli` and embed that image instead.
 
 MySQL installation and running (macOS / Docker)
 
